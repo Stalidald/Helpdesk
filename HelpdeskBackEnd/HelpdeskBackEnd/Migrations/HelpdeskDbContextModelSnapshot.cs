@@ -83,6 +83,10 @@ namespace HelpdeskBackEnd.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Joke")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("TicketId")
                         .HasColumnType("bigint");
 
@@ -92,6 +96,23 @@ namespace HelpdeskBackEnd.Migrations
                         .IsUnique();
 
                     b.ToTable("TicketDetails");
+                });
+
+            modelBuilder.Entity("HelpdeskBackEnd.Models.TicketStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TicketStatuses");
                 });
 
             modelBuilder.Entity("HelpdeskBackEnd.Models.User", b =>
@@ -111,13 +132,39 @@ namespace HelpdeskBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("HelpdeskBackEnd.Models.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("HelpdeskBackEnd.Models.TicketDetails", b =>
@@ -127,6 +174,17 @@ namespace HelpdeskBackEnd.Migrations
                         .HasForeignKey("HelpdeskBackEnd.Models.TicketDetails", "TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HelpdeskBackEnd.Models.User", b =>
+                {
+                    b.HasOne("HelpdeskBackEnd.Models.UserRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("HelpdeskBackEnd.Models.Ticket", b =>
