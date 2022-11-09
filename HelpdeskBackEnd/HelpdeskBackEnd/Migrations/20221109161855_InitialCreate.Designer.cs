@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HelpdeskBackEnd.Migrations
 {
     [DbContext(typeof(HelpdeskDbContext))]
-    [Migration("20221109150252_InitialCreate")]
+    [Migration("20221109161855_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -59,9 +59,6 @@ namespace HelpdeskBackEnd.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("DepartmentId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -69,11 +66,21 @@ namespace HelpdeskBackEnd.Migrations
                     b.Property<DateTime>("PlannedClosedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("TicketDetailsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TicketStatusId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TicketDetailsId");
+
+                    b.HasIndex("TicketStatusId");
 
                     b.ToTable("Tickets");
                 });
@@ -95,19 +102,16 @@ namespace HelpdeskBackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TicketId")
-                        .IsUnique();
-
                     b.ToTable("TicketDetails");
                 });
 
             modelBuilder.Entity("HelpdeskBackEnd.Models.TicketStatus", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -127,6 +131,9 @@ namespace HelpdeskBackEnd.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("DepartmentId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -139,27 +146,29 @@ namespace HelpdeskBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long>("UserRoleId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("UserRoleId");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HelpdeskBackEnd.Models.UserRole", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -170,30 +179,42 @@ namespace HelpdeskBackEnd.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("HelpdeskBackEnd.Models.TicketDetails", b =>
+            modelBuilder.Entity("HelpdeskBackEnd.Models.Ticket", b =>
                 {
-                    b.HasOne("HelpdeskBackEnd.Models.Ticket", null)
-                        .WithOne("Details")
-                        .HasForeignKey("HelpdeskBackEnd.Models.TicketDetails", "TicketId")
+                    b.HasOne("HelpdeskBackEnd.Models.TicketDetails", "TicketDetails")
+                        .WithMany()
+                        .HasForeignKey("TicketDetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("HelpdeskBackEnd.Models.TicketStatus", "TicketStatus")
+                        .WithMany()
+                        .HasForeignKey("TicketStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TicketDetails");
+
+                    b.Navigation("TicketStatus");
                 });
 
             modelBuilder.Entity("HelpdeskBackEnd.Models.User", b =>
                 {
-                    b.HasOne("HelpdeskBackEnd.Models.UserRole", "Role")
+                    b.HasOne("HelpdeskBackEnd.Models.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("HelpdeskBackEnd.Models.Ticket", b =>
-                {
-                    b.Navigation("Details")
+                    b.HasOne("HelpdeskBackEnd.Models.UserRole", "UserRole")
+                        .WithMany()
+                        .HasForeignKey("UserRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("UserRole");
                 });
 #pragma warning restore 612, 618
         }

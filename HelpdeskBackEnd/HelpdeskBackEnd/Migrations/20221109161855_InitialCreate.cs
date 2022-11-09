@@ -25,29 +25,24 @@ namespace HelpdeskBackEnd.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tickets",
+                name: "TicketDetails",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
-                    DepartmentId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PlannedClosedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ClosedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    TicketId = table.Column<long>(type: "bigint", nullable: false),
+                    Joke = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tickets", x => x.Id);
+                    table.PrimaryKey("PK_TicketDetails", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TicketStatuses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -60,7 +55,7 @@ namespace HelpdeskBackEnd.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -70,21 +65,33 @@ namespace HelpdeskBackEnd.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TicketDetails",
+                name: "Tickets",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TicketId = table.Column<long>(type: "bigint", nullable: false),
-                    Joke = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TicketDetailsId = table.Column<long>(type: "bigint", nullable: false),
+                    TicketStatusId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PlannedClosedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ClosedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketDetails", x => x.Id);
+                    table.PrimaryKey("PK_Tickets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TicketDetails_Tickets_TicketId",
-                        column: x => x.TicketId,
-                        principalTable: "Tickets",
+                        name: "FK_Tickets_TicketDetails_TicketDetailsId",
+                        column: x => x.TicketDetailsId,
+                        principalTable: "TicketDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tickets_TicketStatuses_TicketStatusId",
+                        column: x => x.TicketStatusId,
+                        principalTable: "TicketStatuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -94,10 +101,11 @@ namespace HelpdeskBackEnd.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DepartmentId = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    UserRoleId = table.Column<long>(type: "bigint", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -105,23 +113,39 @@ namespace HelpdeskBackEnd.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_UserRoles_RoleId",
-                        column: x => x.RoleId,
+                        name: "FK_Users_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Users_UserRoles_UserRoleId",
+                        column: x => x.UserRoleId,
                         principalTable: "UserRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketDetails_TicketId",
-                table: "TicketDetails",
-                column: "TicketId",
-                unique: true);
+                name: "IX_Tickets_TicketDetailsId",
+                table: "Tickets",
+                column: "TicketDetailsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId",
+                name: "IX_Tickets_TicketStatusId",
+                table: "Tickets",
+                column: "TicketStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_DepartmentId",
                 table: "Users",
-                column: "RoleId");
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_UserRoleId",
+                table: "Users",
+                column: "UserRoleId");
+
 
             migrationBuilder.Sql(
                 sql: @"INSERT INTO [dbo].[TicketStatuses] VALUES ('Open')
@@ -131,15 +155,24 @@ namespace HelpdeskBackEnd.Migrations
                 INSERT INTO [dbo].[TicketStatuses] VALUES ('Reopened');
 
                 INSERT INTO [dbo].[UserRoles] VALUES ('HelpdeskUser'); 
-                INSERT INTO [dbo].[UserRoles] VALUES ('HelpdeskAdmin');"
-                );
+                INSERT INTO [dbo].[UserRoles] VALUES ('HelpdeskAdmin');
+
+                INSERT INTO [dbo].[Departments] VALUES ('HR');
+                INSERT INTO [dbo].[Departments] VALUES ('Sales');
+                INSERT INTO [dbo].[Departments] VALUES ('Development');
+                INSERT INTO [dbo].[Departments] VALUES ('PR');
+                INSERT INTO [dbo].[Departments] VALUES ('LEGAL');"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Departments");
+                name: "Tickets");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "TicketDetails");
@@ -148,10 +181,7 @@ namespace HelpdeskBackEnd.Migrations
                 name: "TicketStatuses");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Tickets");
+                name: "Departments");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");

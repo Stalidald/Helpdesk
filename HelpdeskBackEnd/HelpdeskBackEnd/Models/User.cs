@@ -9,16 +9,29 @@ namespace HelpdeskBackEnd.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+
+        [ForeignKey("Department")]
+        public long DepartmentId { get; set; }
+
+        public virtual Department Department { get; set; }
+
         [Required]
         public string Name { get; set; }
+
         [Required]
         public string Password { get; set; }
+
         [Required]
         public string UserName { get; set; }
-        [Required]
-        public UserRole Role { get; set; }
+
+        [ForeignKey("UserRole")]
+        public long UserRoleId { get; set; }
+
+        public virtual UserRole UserRole { get; set; } 
+
         [Required]
         public string Email { get; set; }
+
         public DateTime CreatedDate { get; set; }
     }
 }
