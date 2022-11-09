@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HelpdeskBackEnd.Models
 {
-    public class TicketDetails
+    public class TicketDetails : BaseModel
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
 
         [Required]
         public long TicketId { get; set; }

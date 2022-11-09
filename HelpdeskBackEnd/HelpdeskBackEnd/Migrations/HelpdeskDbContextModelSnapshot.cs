@@ -30,9 +30,15 @@ namespace HelpdeskBackEnd.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -47,11 +53,8 @@ namespace HelpdeskBackEnd.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("ClosedOn")
+                    b.Property<DateTime?>("ClosedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<long>("CreatedBy")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -60,7 +63,7 @@ namespace HelpdeskBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PlannedClosedDate")
+                    b.Property<DateTime?>("PlannedClosedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<long>("TicketDetailsId")
@@ -73,11 +76,19 @@ namespace HelpdeskBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TicketDetailsId");
 
                     b.HasIndex("TicketStatusId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
                 });
@@ -90,12 +101,18 @@ namespace HelpdeskBackEnd.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Joke")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("TicketId")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -110,9 +127,15 @@ namespace HelpdeskBackEnd.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -121,11 +144,13 @@ namespace HelpdeskBackEnd.Migrations
 
             modelBuilder.Entity("HelpdeskBackEnd.Models.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CreatedDate")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<long>("DepartmentId")
@@ -142,6 +167,9 @@ namespace HelpdeskBackEnd.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -167,9 +195,15 @@ namespace HelpdeskBackEnd.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -190,9 +224,17 @@ namespace HelpdeskBackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HelpdeskBackEnd.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("TicketDetails");
 
                     b.Navigation("TicketStatus");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HelpdeskBackEnd.Models.User", b =>

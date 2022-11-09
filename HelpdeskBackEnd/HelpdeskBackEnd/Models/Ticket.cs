@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HelpdeskBackEnd.Models
 {
-    public class Ticket
+    public class Ticket : BaseModel
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-
         [Required]
         public string Title { get; set; }
 
@@ -24,13 +21,13 @@ namespace HelpdeskBackEnd.Models
 
         public virtual TicketStatus TicketStatus { get; set; }
 
-        public long CreatedBy { get; set; }
+        [ForeignKey("User")]
+        public long UserId { get; set; }
+        public virtual User User { get; set; }
 
-        public DateTime CreatedOn { get; set; }
+        public DateTime? PlannedClosedDate { get; set; }
 
-        public DateTime PlannedClosedDate { get; set; }
-
-        public DateTime ClosedOn { get; set; }
+        public DateTime? ClosedOn { get; set; }
 
     }
 }

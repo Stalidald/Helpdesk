@@ -5,10 +5,8 @@ using System.Linq.Expressions;
 
 namespace HelpdeskBackEnd.Models
 {
-    public class User
+    public class User : BaseModel
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
 
         [ForeignKey("Department")]
         public long DepartmentId { get; set; }
@@ -31,7 +29,5 @@ namespace HelpdeskBackEnd.Models
 
         [Required]
         public string Email { get; set; }
-
-        public DateTime CreatedDate { get; set; }
     }
 }

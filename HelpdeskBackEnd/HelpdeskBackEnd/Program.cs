@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 var allowSpecificOrigin = "_allowSpecificOrigin_";
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Add services to the container.
 
