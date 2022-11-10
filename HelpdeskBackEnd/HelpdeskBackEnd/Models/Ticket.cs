@@ -17,12 +17,15 @@ namespace HelpdeskBackEnd.Models
         public virtual TicketDetails TicketDetails { get; set; }
 
         [ForeignKey("TicketStatus")]
+        [Required]
         public long TicketStatusId { get; set; }
 
         public virtual TicketStatus TicketStatus { get; set; }
 
         [ForeignKey("User")]
+        [Required]
         public long UserId { get; set; }
+
         public virtual User User { get; set; }
 
         public DateTime? PlannedClosedDate { get; set; }

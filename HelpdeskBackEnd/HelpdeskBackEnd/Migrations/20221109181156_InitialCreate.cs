@@ -182,8 +182,8 @@ namespace HelpdeskBackEnd.Migrations
                 INSERT INTO [dbo].[Departments] ([Name]) VALUES ('Sales');
                 INSERT INTO [dbo].[Departments] ([Name]) VALUES ('Development');
                 INSERT INTO [dbo].[Departments] ([Name]) VALUES ('PR');
-                INSERT INTO [dbo].[Departments] ([Name]) VALUES ('LEGAL');"
-);
+                INSERT INTO [dbo].[Departments] ([Name]) VALUES ('Legal');"
+            );
         }
 
         /// <inheritdoc />

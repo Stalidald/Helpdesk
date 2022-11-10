@@ -9,6 +9,7 @@ namespace HelpdeskBackEnd.Models
     {
 
         [ForeignKey("Department")]
+        [Required]
         public long DepartmentId { get; set; }
 
         public virtual Department Department { get; set; }
@@ -23,6 +24,7 @@ namespace HelpdeskBackEnd.Models
         public string UserName { get; set; }
 
         [ForeignKey("UserRole")]
+        [Required]
         public long UserRoleId { get; set; }
 
         public virtual UserRole UserRole { get; set; } 
